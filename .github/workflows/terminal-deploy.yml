@@ -82,20 +82,27 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
         env:
           SSH_PRIVATE_KEY: ${{ secrets.RSA_PRIVATE_KEY }}
-
-      - name: SSH into the server, unzip settings.zip, move files, and run composer install
+          
+      - name: SSH into the server and unzip settings.zip
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "shami65i@${{ secrets.FTP_SERVER }}" << 'EOF'
             cd "${{ secrets.FTP_SERVER }}"
             yes | unzip settings.zip -d settings
-            # Copy .env.example and .env, .htaccess from settings directory only for php
+          EOF
+          
+      - name: SSH into the server and copy .env files
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "shami65i@${{ secrets.FTP_SERVER }}" << 'EOF'
             cp settings/.env.example .env.example
             cp settings/.env .env
             cp settings/public/.htaccess .htaccess
             cp settings/.htaccess .htaccess
-            # Copy other remaing files
+          EOF
+          
+      - name: SSH into the server and move files, and run composer install
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "shami65i@${{ secrets.FTP_SERVER }}" << 'EOF'
             yes | cp -rf settings/* .
-
             # Remove the 'settings' directory
             rm -rf settings
             php artisan migrate:fresh --force
