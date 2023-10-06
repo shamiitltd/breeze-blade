@@ -67,6 +67,9 @@ jobs:
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no shami65i@shamiit.org << 'EOF'
             cd testphp.shamiit.org
             yes | unzip settings.zip -d settings
+            # Copy .env.example and .env from settings directory
+            cp settings/.env.example .env.example
+            cp settings/.env .env
             yes | cp -rf settings/* .
 
             # Remove the 'settings' directory
