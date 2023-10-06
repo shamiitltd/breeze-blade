@@ -67,8 +67,11 @@ jobs:
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no shami65i@shamiit.org << 'EOF'
             cd testphp.shamiit.org
             yes | unzip settings.zip -d settings
-            mv settings/* .
-            rmdir settings
+            yes | cp -rf settings/* .
+
+            # Remove the 'settings' directory
+            rm -rf settings
+
             composer install
             php artisan migrate:fresh --force
           EOF
