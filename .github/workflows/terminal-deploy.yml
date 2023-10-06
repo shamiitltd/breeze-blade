@@ -65,7 +65,7 @@ jobs:
       - name: SSH into the server, unzip settings.zip, move files, and run composer install
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no shami65i@shamiit.org << 'EOF'
-            cd edu.shamiit.org
+            cd testphp.shamiit.org
             unzip settings.zip -d settings
             mv settings/* .
             rmdir settings
