@@ -1,0 +1,68 @@
+name: Deploy website
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch: # Manually run this workflow
+
+jobs:
+  web-deploy:
+    name: Terminal Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the latest code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP 8.1
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      - uses: actions/setup-node@master
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+        
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: Zip the code
+        run: zip -r settings.zip .
+
+      - name: Create a Deployment Directory
+        run: mkdir deploy
+
+      - name: Move settings.zip to Deployment Directory
+        run: mv settings.zip deploy/
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./deploy/
+          exclude: |
+            **/.git*
+            **/.git*/**
+
+
+      - name: Install SSH key
+        run: echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.RSA_PRIVATE_KEY }}
+
+      - name: SSH into the server, unzip settings.zip, move files, and run composer install
+        run: |
+          ssh -o StrictHostKeyChecking=no shami65i@shamiit.org << 'EOF'
+            cd edu.shamiit.org
+            unzip settings.zip -d settings
+            mv settings/* .
+            rmdir settings
+            composer install
+            php artisan migrate
+          EOF

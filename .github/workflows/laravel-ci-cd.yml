@@ -1,10 +1,8 @@
 name: Deploy website
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  workflow_dispatch: # Manually run this workflow
+
 jobs:
   web-deploy:
     name: 🎉 Deploy
