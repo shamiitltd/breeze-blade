@@ -70,5 +70,5 @@ jobs:
             mv settings/* .
             rmdir settings
             composer install
-            php artisan migrate:fresh <<< 'yes'
+            php artisan migrate:fresh --force
           EOF
