@@ -75,8 +75,8 @@ jobs:
 
       - name: SSH into the server, unzip settings.zip, move files, and run composer install
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no shami65i@shamiit.org << 'EOF'
-            cd testphp.shamiit.org
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "shami65i@${{ secrets.FTP_SERVER }}" << 'EOF'
+            cd "${{ secrets.FTP_SERVER }}"
             yes | unzip settings.zip -d settings
             # Copy .env.example and .env from settings directory
             cp settings/.env.example .env.example
