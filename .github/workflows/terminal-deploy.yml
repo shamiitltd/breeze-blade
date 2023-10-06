@@ -93,6 +93,7 @@ jobs:
       - name: SSH into the server and copy .env files
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "shami65i@${{ secrets.FTP_SERVER }}" << 'EOF'
+            cd "${{ secrets.FTP_SERVER }}"
             cp settings/.env.example .env.example
             cp settings/.env .env
             cp settings/public/.htaccess .htaccess
@@ -102,6 +103,7 @@ jobs:
       - name: SSH into the server and move files, and run composer install
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "shami65i@${{ secrets.FTP_SERVER }}" << 'EOF'
+            cd "${{ secrets.FTP_SERVER }}"
             yes | cp -rf settings/* .
             # Remove the 'settings' directory
             rm -rf settings
