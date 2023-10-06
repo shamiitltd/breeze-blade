@@ -78,9 +78,12 @@ jobs:
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "shami65i@${{ secrets.FTP_SERVER }}" << 'EOF'
             cd "${{ secrets.FTP_SERVER }}"
             yes | unzip settings.zip -d settings
-            # Copy .env.example and .env from settings directory
+            # Copy .env.example and .env, .htaccess from settings directory only for php
             cp settings/.env.example .env.example
             cp settings/.env .env
+            cp settings/public/.htaccess .htaccess
+            cp settings/.htaccess .htaccess
+            # Copy other remaing files
             yes | cp -rf settings/* .
 
             # Remove the 'settings' directory
