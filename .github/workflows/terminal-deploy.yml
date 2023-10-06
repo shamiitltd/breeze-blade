@@ -85,7 +85,7 @@ jobs:
 
             # Remove the 'settings' directory
             rm -rf settings
-
-            composer install
             php artisan migrate:fresh --force
+            # Remove settings.zip
+            rm settings.zip
           EOF
