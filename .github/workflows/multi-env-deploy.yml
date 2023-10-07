@@ -9,7 +9,7 @@ jobs:
   deploy:
     name: Deploy to TEST
     runs-on: ubuntu-latest
-
+    environment: ${{ matrix.environment }}
     strategy:
       matrix:
         environment:
@@ -38,6 +38,7 @@ jobs:
     name: Deploy to QA
     runs-on: ubuntu-latest
     needs: deploy
+    environment: QA
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -51,6 +52,7 @@ jobs:
     name: Deploy to PROD
     runs-on: ubuntu-latest
     needs: deploy_qa
+    environment: PROD
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
