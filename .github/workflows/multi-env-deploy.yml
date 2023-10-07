@@ -155,6 +155,10 @@ jobs:
     needs: PRODUCTION
     strategy:
       matrix:
+        environment:
+          - TEST
+          - QA
+          - PROD
         tasks:
           - DEVELOPMENT
           - QUALITYANALYSIS
