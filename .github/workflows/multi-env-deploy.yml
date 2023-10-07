@@ -16,6 +16,8 @@ jobs:
     name: Clean Ready
     runs-on: ubuntu-latest
     environment: CLEAN
+    if: |
+      github.ref == 'refs/heads/master'
     steps:
       - name: Cleaning Permission okay
         run: echo "Cleaning ready"
@@ -103,7 +105,7 @@ jobs:
           name: release
           path: release
 
-      - name: 📂 Sync files
+      - name: 📂 Sync files  ${{ env.ENVIRONMENT_NAME }} 
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -151,7 +153,7 @@ jobs:
           name: release
           path: release
 
-      - name: 📂 Sync files
+      - name: 📂 Sync files  ${{ env.ENVIRONMENT_NAME }} 
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -199,7 +201,7 @@ jobs:
           name: release
           path: release
 
-      - name: 📂 Sync files
+      - name: 📂 Sync files  ${{ env.ENVIRONMENT_NAME }} 
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
