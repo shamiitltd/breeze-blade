@@ -8,10 +8,15 @@ on:
   workflow_dispatch: # Manually run this workflow
 
 jobs:
-  CLEANING:
+  CLEANING-READY:
     name: Clean ${{ matrix.environment }}
     runs-on: ubuntu-latest
     environment: CLEAN
+  CLEANING:
+    name: Clean ${{ matrix.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ matrix.environment }}
+    needs: CLEANING-READY
     strategy:
       matrix:
         environment:
@@ -147,22 +152,22 @@ jobs:
           exclude: |
             **/.git*
             **/.git*/**
-
+            
+  MIGRATION-READY:
+    name: Migration Ready
+    runs-on: ubuntu-latest
+    environment: MIGRATE
   MIGRATION:
     name: Migration in ${{ matrix.environment }}
     runs-on: ubuntu-latest
-    environment: MIGRATE
-    needs: PRODUCTION
+    environment: ${{ matrix.environment }}
+    needs: MIGRATION-READY
     strategy:
       matrix:
         environment:
           - TEST
           - QA
           - PROD
-        tasks:
-          - DEVELOPMENT
-          - QUALITYANALYSIS
-          - PRODUCTION
     steps:
       - name: Migrating the Database in ${{ matrix.environment }}
         run: |
