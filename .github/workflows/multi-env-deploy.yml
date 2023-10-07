@@ -152,7 +152,7 @@ jobs:
     name: Migration in ${{ matrix.environment }}
     runs-on: ubuntu-latest
     environment: MIGRATE
-    needs: ${{ matrix.tasks }}
+    needs: PRODUCTION
     strategy:
       matrix:
         tasks:
