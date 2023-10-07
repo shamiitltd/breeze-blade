@@ -235,6 +235,7 @@ jobs:
     name: Migration Ready
     runs-on: ubuntu-latest
     environment: MIGRATE
+    needs: ["DEVELOPMENT", "QUALITYANALYSIS", "PRODUCTION"]
     steps:
       - name: Migration Permission okay
         run: echo "Migrate ready"
