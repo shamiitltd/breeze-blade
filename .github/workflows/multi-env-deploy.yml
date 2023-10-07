@@ -12,6 +12,9 @@ jobs:
     name: Clean ${{ matrix.environment }}
     runs-on: ubuntu-latest
     environment: CLEAN
+    steps:
+      - name: Cleaning Permission okay
+        run: echo "Cleaning ready"
   CLEANING:
     name: Clean ${{ matrix.environment }}
     runs-on: ubuntu-latest
@@ -157,6 +160,9 @@ jobs:
     name: Migration Ready
     runs-on: ubuntu-latest
     environment: MIGRATE
+    steps:
+      - name: Migration Permission okay
+        run: echo "Migrate ready"
   MIGRATION:
     name: Migration in ${{ matrix.environment }}
     runs-on: ubuntu-latest
