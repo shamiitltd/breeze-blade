@@ -8,29 +8,10 @@ on:
   workflow_dispatch: # Manually run this workflow
 
 jobs:
-  MIGRATION:
-    name: Migration in ${{ matrix.environment }}
-    runs-on: ubuntu-latest
-    environment: ${{ matrix.environment }}
-    strategy:
-      matrix:
-        environment:
-          - TEST
-          - QA
-          - PROD
-    steps:
-      - name: Migrating the Database in ${{ matrix.environment }}
-        run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "shami65i@${{ secrets.FTP_SERVER }}" << 'EOF'
-            cd "${{ secrets.FTP_SERVER }}"
-            php artisan migrate:fresh --force
-          EOF
-
-
   CLEANING:
     name: Clean ${{ matrix.environment }}
     runs-on: ubuntu-latest
-    environment: ${{ matrix.environment }}
+    environment: CLEAN
     strategy:
       matrix:
         environment:
@@ -167,4 +148,22 @@ jobs:
             **/.git*
             **/.git*/**
 
+  MIGRATION:
+    name: Migration in ${{ matrix.environment }}
+    runs-on: ubuntu-latest
+    environment: MIGRATE
+    needs: ${{ matrix.tasks }}
+    strategy:
+      matrix:
+        tasks:
+          - DEVELOPMENT
+          - QUALITYANALYSIS
+          - PRODUCTION
+    steps:
+      - name: Migrating the Database in ${{ matrix.environment }}
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "shami65i@${{ secrets.FTP_SERVER }}" << 'EOF'
+            cd "${{ secrets.FTP_SERVER }}"
+            php artisan migrate:fresh --force
+          EOF
 
