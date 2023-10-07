@@ -1,0 +1,61 @@
+name: Multi Env Workflow
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    name: Deploy to TEST
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        environment:
+          - TEST
+          - QA
+          - PROD
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to ${{ matrix.environment }} ENV
+        run: |
+          if [ "${{ matrix.environment }}" == "TEST" ]; then
+            # Deployment steps for TEST environment
+            echo "Deploying to TEST ENV..."
+          elif [ "${{ matrix.environment }}" == "QA" ]; then
+            # Deployment steps for QA environment
+            echo "Deploying to QA ENV..."
+          elif [ "${{ matrix.environment }}" == "PROD" ]; then
+            # Deployment steps for PROD environment
+            echo "Deploying to PROD ENV..."
+          fi
+
+  deploy_qa:
+    name: Deploy to QA
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to QA ENV
+        run: |
+          # Deployment steps for QA environment
+          echo "Deploying to QA ENV..."
+
+  deploy_prod:
+    name: Deploy to PROD
+    runs-on: ubuntu-latest
+    needs: deploy_qa
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to PROD ENV
+        run: |
+          # Deployment steps for PROD environment
+          echo "Deploying to PROD ENV..."
