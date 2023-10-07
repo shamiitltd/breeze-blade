@@ -95,7 +95,7 @@ jobs:
         with:
           name: release
           path: release.zip
-          retention-days: 5
+          retention-days: 10
 
 
   DEVELOPMENT:
