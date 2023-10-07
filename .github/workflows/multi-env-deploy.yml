@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "master" ]
   workflow_dispatch: # Manually run this workflow
+env:
+  DATABASE: ${{ secrets.DB_DATABASE }}
+  USERNAME: ${{ secrets.DB_USERNAME }}
+  PASSWORD: ${{ secrets.DB_PASSWORD }}
 
 jobs:
   CLEANING-READY:
