@@ -235,23 +235,45 @@ jobs:
     name: Migration Ready
     runs-on: ubuntu-latest
     environment: MIGRATE
-    needs: ["DEVELOPMENT", "QUALITYANALYSIS", "PRODUCTION"]
+    #needs: ["DEVELOPMENT", "QUALITYANALYSIS", "PRODUCTION"]
     steps:
       - name: Migration Permission okay
         run: echo "Migrate ready"
-  MIGRATION:
-    name: Migration in ${{ matrix.environment }}
+
+  MIGRATION-TEST:
+    name: Migration in TEST
     runs-on: ubuntu-latest
-    environment: ${{ matrix.environment }}
-    needs: MIGRATION-READY
-    strategy:
-      matrix:
-        environment:
-          - TEST
-          - QA
-          - PROD
+    environment: TEST
+    needs: ["MIGRATION-READY", "DEVELOPMENT"]
     steps:
-      - name: Migrating the Database in ${{ matrix.environment }}
+      - name: Migrating the Database in TEST
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_USER }}" << 'EOF'
+            cd "${{ secrets.FTP_SERVER }}"
+            php artisan migrate:fresh --force
+          EOF
+
+
+  MIGRATION-QA:
+    name: Migration in QA
+    runs-on: ubuntu-latest
+    environment: QA
+    needs: ["MIGRATION-READY", "QUALITYANALYSIS"]
+    steps:
+      - name: Migrating the Database in QA
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_USER }}" << 'EOF'
+            cd "${{ secrets.FTP_SERVER }}"
+            php artisan migrate:fresh --force
+          EOF
+
+  MIGRATION-PROD:
+    name: Migration in PROD
+    runs-on: ubuntu-latest
+    environment: PROD
+    needs: ["MIGRATION-READY", "PRODUCTION"]
+    steps:
+      - name: Migrating the Database in PROD
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_USER }}" << 'EOF'
             cd "${{ secrets.FTP_SERVER }}"
