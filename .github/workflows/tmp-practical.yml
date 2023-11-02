@@ -1,45 +1,13 @@
-name: Workflow with Manual Approval
-
+name: Every 5 Minutes Workflow
 on:
-  push:
-    branches: [ "master", "develop" ]
-  pull_request:
-    branches: [ "master" ]
-  workflow_dispatch: # Manually run this workflow
+  schedule:
+    - cron: '*/5 * * * *'  # This schedule runs the action every 5 minutes.
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Check out the code
         uses: actions/checkout@v2
 
-      - name: Build
-        run: echo "Building the project..."
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy
-        run: echo "Deploying the project..."
-
-  manual_approval:
-    needs: deploy
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Manual Approval
-        id: approval
-        run: echo "This step requires manual approval"
-        
-  notify_approval:
-    needs: manual_approval
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Notify Approval
-        if: ${{ needs.manual_approval.outputs.approved == 'true' }}
-        run: echo "The manual approval step has been approved"
+      # Add your custom steps here.
